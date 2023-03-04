@@ -1,0 +1,17 @@
+# Alexandria
+
+This is a tool that allows users to store and deploy Terraform modules and providers. With this tool, users can easily manage their Terraform infrastructure code and deploy individual modules from a pre-defined catalog.
+
+Features:
+- Store Terraform modules and providers in a central repository
+- Easily search and find modules by name or description
+- Deploy individual modules from a pre-defined catalog
+- Automatically download and install provider dependencies for each module
+- View information about each module, including its source, version, and dependencies
+- Manage access to modules with role-based access control
+
+## Roadmap
+implements:
+- https://developer.hashicorp.com/terraform/internals/login-protocol
+- https://developer.hashicorp.com/terraform/internals/module-registry-protocol
+- https://developer.hashicorp.com/terraform/internals/provider-registry-protocol
