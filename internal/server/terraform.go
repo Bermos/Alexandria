@@ -1,9 +1,9 @@
 package server
 
 import (
-	"Alexandria/internal/gen/openapi"
-	"Alexandria/internal/terraform_services"
 	"context"
+	"github.com/Bermos/Alexandria/internal/gen/openapi"
+	"github.com/Bermos/Alexandria/internal/terraform_services"
 	"net/http"
 )
 

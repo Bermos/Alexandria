@@ -1,8 +1,8 @@
 package server
 
 import (
-	"Alexandria/internal/gen/openapi"
 	"fmt"
+	"github.com/Bermos/Alexandria/internal/gen/openapi"
 	"log"
 	"net/http"
 	"time"

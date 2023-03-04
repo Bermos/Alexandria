@@ -1,8 +1,8 @@
 package main
 
 import (
-	"Alexandria/internal/server"
-	"Alexandria/internal/terraform_bind"
+	"github.com/Bermos/Alexandria/internal/server"
+	"github.com/Bermos/Alexandria/internal/terraform_bind"
 )
 
 func main() {
