@@ -1,0 +1,402 @@
+openapi: 3.0.3
+info:
+  description: Alexandria
+  title: Alexandria
+  version: 1.0.0
+servers:
+- url: http://localhost:9090
+tags:
+- name: modules
+- name: terraform
+paths:
+  /.well-known/terraform.json:
+    get:
+      description: Get Terraform service discovery file
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: Service discovery file
+      tags:
+      - terraform
+  /terraform/providers/v1/{namespace}/{type}/versions:
+    get:
+      description: Get available versions for provider
+      parameters:
+      - description: Namespace
+        explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Provider type
+        explode: false
+        in: path
+        name: type
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/provider_version'
+          description: Versions
+      tags:
+      - terraform
+  /terraform/providers/v1/{namespace}/{type}/{version}/download/{os}/{arch}:
+    get:
+      description: Get details for provider
+      parameters:
+      - description: Namespace
+        explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Provider type
+        explode: false
+        in: path
+        name: type
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Provider version
+        explode: false
+        in: path
+        name: version
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Operating system
+        explode: false
+        in: path
+        name: os
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Architecture
+        explode: false
+        in: path
+        name: arch
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/provider_details'
+          description: Versions
+      tags:
+      - terraform
+  /terraform/modules/v1/{namespace}/{name}/{system}/versions:
+    get:
+      description: Get available versions for a Terraform module
+      parameters:
+      - description: The namespace of the Terraform module
+        explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The name of the Terraform module
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The system that the Terraform module is designed for
+        explode: false
+        in: path
+        name: system
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/module_versions'
+          description: Versions
+      tags:
+      - terraform
+  /terraform/modules/v1/{namespace}/{name}/{system}/{version}/download:
+    get:
+      description: Download a specific version of a Terraform module
+      parameters:
+      - description: The namespace of the Terraform module
+        explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The name of the Terraform module
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The system that the Terraform module is designed for
+        explode: false
+        in: path
+        name: system
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The version of the Terraform module to download
+        explode: false
+        in: path
+        name: version
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Module
+          headers:
+            X-Terraform-Get:
+              explode: false
+              schema:
+                type: string
+              style: simple
+      tags:
+      - terraform
+  /modules:
+    get:
+      description: List all modules
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  $ref: '#/components/schemas/module'
+                type: object
+          description: ""
+      tags:
+      - modules
+components:
+  schemas:
+    provider_version:
+      example:
+        versions:
+        - protocols:
+          - protocols
+          - protocols
+          version: version
+          platforms:
+          - os: os
+            arch: arch
+          - os: os
+            arch: arch
+        - protocols:
+          - protocols
+          - protocols
+          version: version
+          platforms:
+          - os: os
+            arch: arch
+          - os: os
+            arch: arch
+      properties:
+        versions:
+          items:
+            $ref: '#/components/schemas/provider_version_versions_inner'
+          required:
+          - platforms
+          - protocols
+          - version
+          type: array
+      type: object
+    provider_details:
+      example:
+        filename: filename
+        os: os
+        shasums_signature_url: shasums_signature_url
+        shasums_url: shasums_url
+        download_url: download_url
+        signing_keys:
+          gpg_public_keys:
+          - key_id: key_id
+            source: source
+            source_url: source_url
+            ascii_armor: ascii_armor
+            trust_signature: trust_signature
+          - key_id: key_id
+            source: source
+            source_url: source_url
+            ascii_armor: ascii_armor
+            trust_signature: trust_signature
+        arch: arch
+        shasum: shasum
+        protocols:
+        - protocols
+        - protocols
+      properties:
+        protocols:
+          items:
+            type: string
+          type: array
+        os:
+          type: string
+        arch:
+          type: string
+        filename:
+          type: string
+        download_url:
+          type: string
+        shasums_url:
+          type: string
+        shasums_signature_url:
+          type: string
+        shasum:
+          type: string
+        signing_keys:
+          $ref: '#/components/schemas/provider_details_signing_keys'
+      type: object
+    module_versions:
+      example:
+        modules:
+        - versions:
+          - version: 1.0.0
+          - version: 1.1.0
+          - version: 2.0.0
+      properties:
+        modules:
+          items:
+            $ref: '#/components/schemas/module_versions_modules_inner'
+          type: array
+      type: object
+    module:
+      properties:
+        path:
+          type: string
+        name:
+          type: string
+        has_readme:
+          type: boolean
+        module_info:
+          $ref: '#/components/schemas/module_module_info'
+      type: object
+    provider_version_versions_inner_platforms_inner:
+      example:
+        os: os
+        arch: arch
+      properties:
+        os:
+          type: string
+        arch:
+          type: string
+      type: object
+    provider_version_versions_inner:
+      example:
+        protocols:
+        - protocols
+        - protocols
+        version: version
+        platforms:
+        - os: os
+          arch: arch
+        - os: os
+          arch: arch
+      properties:
+        version:
+          type: string
+        protocols:
+          items:
+            type: string
+          type: array
+        platforms:
+          items:
+            $ref: '#/components/schemas/provider_version_versions_inner_platforms_inner'
+          type: array
+      type: object
+    provider_details_signing_keys_gpg_public_keys_inner:
+      example:
+        key_id: key_id
+        source: source
+        source_url: source_url
+        ascii_armor: ascii_armor
+        trust_signature: trust_signature
+      properties:
+        key_id:
+          type: string
+        ascii_armor:
+          type: string
+        trust_signature:
+          type: string
+        source:
+          type: string
+        source_url:
+          type: string
+      type: object
+    provider_details_signing_keys:
+      example:
+        gpg_public_keys:
+        - key_id: key_id
+          source: source
+          source_url: source_url
+          ascii_armor: ascii_armor
+          trust_signature: trust_signature
+        - key_id: key_id
+          source: source
+          source_url: source_url
+          ascii_armor: ascii_armor
+          trust_signature: trust_signature
+      properties:
+        gpg_public_keys:
+          items:
+            $ref: '#/components/schemas/provider_details_signing_keys_gpg_public_keys_inner'
+          type: array
+      required:
+      - gpg_public_keys
+      type: object
+    module_versions_modules_inner_versions_inner:
+      properties:
+        version:
+          type: string
+      type: object
+    module_versions_modules_inner:
+      properties:
+        versions:
+          items:
+            $ref: '#/components/schemas/module_versions_modules_inner_versions_inner'
+          type: array
+      type: object
+    module_module_info:
+      properties:
+        valid:
+          type: boolean
+        error_count:
+          type: integer
+        warning_count:
+          type: integer
+      type: object
