@@ -20,3 +20,4 @@ implements:
 
 ### Setup
 - (Re-)Generate server code from OpenAPI spec; `docker run --rm -v ($pwd):/local --name openapi-generator -u 1000 -w /local openapitools/openapi-generator-cli:latest generate -i openapi/spec.yaml -o internal/gen -g go-server -c openapi/server-config.yml`
+- (Re-)Generate client code from OpenAPI spec: `docker run --rm -v ($pwd):/local --name openapi-generator -u 1000 -w /local openapitools/openapi-generator-cli:latest generate -i openapi/spec.yaml -o web/src/app/api_client -g typescript-angular`
