@@ -1,0 +1,294 @@
+openapi: 3.0.3
+info:
+  title: Alexandria
+  description: Alexandria
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:9090'
+tags:
+  - name: modules
+  - name: terraform
+paths:
+  /.well-known/terraform.json:
+    get:
+      tags:
+        - terraform
+      description: 'Get Terraform service discovery file'
+      responses:
+        200:
+          description: 'Service discovery file'
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+
+  /terraform/providers/v1/{namespace}/{type}/versions:
+    get:
+      tags:
+        - terraform
+      description: 'Get available versions for provider'
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          description: 'Namespace'
+          schema:
+            type: string
+        - name: type
+          in: path
+          required: true
+          description: 'Provider type'
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Versions'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/provider_version'
+
+  /terraform/providers/v1/{namespace}/{type}/{version}/download/{os}/{arch}:
+    get:
+      tags:
+        - terraform
+      description: 'Get details for provider'
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          description: 'Namespace'
+          schema:
+            type: string
+        - name: type
+          in: path
+          required: true
+          description: 'Provider type'
+          schema:
+            type: string
+        - name: version
+          in: path
+          required: true
+          description: 'Provider version'
+          schema:
+            type: string
+        - name: os
+          in: path
+          required: true
+          description: 'Operating system'
+          schema:
+            type: string
+        - name: arch
+          in: path
+          required: true
+          description: 'Architecture'
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Versions'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/provider_details'
+
+  /terraform/modules/v1/{namespace}/{name}/{system}/versions:
+    get:
+      tags:
+        - terraform
+      description: 'Get available versions for a Terraform module'
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          description: 'The namespace of the Terraform module'
+          schema:
+            type: string
+        - name: name
+          in: path
+          required: true
+          description: 'The name of the Terraform module'
+          schema:
+            type: string
+        - name: system
+          in: path
+          required: true
+          description: 'The system that the Terraform module is designed for'
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Versions'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/module_versions'
+
+  /terraform/modules/v1/{namespace}/{name}/{system}/{version}/download:
+    get:
+      tags:
+        - terraform
+      description: 'Download a specific version of a Terraform module'
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          description: 'The namespace of the Terraform module'
+          schema:
+            type: string
+        - name: name
+          in: path
+          required: true
+          description: 'The name of the Terraform module'
+          schema:
+            type: string
+        - name: system
+          in: path
+          required: true
+          description: 'The system that the Terraform module is designed for'
+          schema:
+            type: string
+        - name: version
+          in: path
+          required: true
+          description: 'The version of the Terraform module to download'
+          schema:
+            type: string
+      responses:
+        204:
+          description: 'Module'
+          headers:
+            X-Terraform-Get:
+              schema:
+                type: string
+
+  /modules:
+    get:
+      tags:
+        - modules
+      description: 'List all modules'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/module'
+
+
+components:
+  schemas:
+    provider_version:
+      type: object
+      properties:
+        versions:
+          type: array
+          items:
+            type: object
+            properties:
+              version:
+                type: string
+              protocols:
+                type: array
+                items:
+                  type: string
+              platforms:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    os:
+                      type: string
+                    arch:
+                      type: string
+          required:
+            - version
+            - protocols
+            - platforms
+
+    provider_details:
+      type: object
+      properties:
+        protocols:
+          type: array
+          items:
+            type: string
+        os:
+          type: string
+        arch:
+          type: string
+        filename:
+          type: string
+        download_url:
+          type: string
+        shasums_url:
+          type: string
+        shasums_signature_url:
+          type: string
+        shasum:
+          type: string
+        signing_keys:
+          type: object
+          properties:
+            gpg_public_keys:
+              type: array
+              items:
+                type: object
+                properties:
+                  key_id:
+                    type: string
+                  ascii_armor:
+                    type: string
+                  trust_signature:
+                    type: string
+                  source:
+                    type: string
+                  source_url:
+                    type: string
+          required:
+            - gpg_public_keys
+
+    module_versions:
+      type: object
+      properties:
+        modules:
+          type: array
+          items:
+            type: object
+            properties:
+              versions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    version:
+                      type: string
+      example:
+        modules:
+          - versions:
+              - version: "1.0.0"
+              - version: "1.1.0"
+              - version: "2.0.0"
+
+    module:
+      type: object
+      properties:
+        path:
+          type: string
+        name:
+          type: string
+        has_readme:
+          type: boolean
+        module_info:
+          type: object
+          properties:
+            valid:
+              type: boolean
+            error_count:
+              type: integer
+            warning_count:
+              type: integer
