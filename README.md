@@ -15,3 +15,8 @@ implements:
 - https://developer.hashicorp.com/terraform/internals/login-protocol
 - https://developer.hashicorp.com/terraform/internals/module-registry-protocol
 - https://developer.hashicorp.com/terraform/internals/provider-registry-protocol
+
+## Development
+
+### Setup
+- (Re-)Generate server code from OpenAPI spec; `docker run --rm -v ($pwd):/local --name openapi-generator -u 1000 -w /local openapitools/openapi-generator-cli:latest generate -i openapi/spec.yaml -o internal/gen -g go-server -c openapi/server-config.yml`
