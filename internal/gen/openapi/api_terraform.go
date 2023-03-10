@@ -10,6 +10,7 @@
 package openapi
 
 import (
+	"encoding/json"
 	"net/http"
 	"strings"
 
@@ -56,6 +57,12 @@ func (c *TerraformApiController) Routes() Routes {
 			c.TerraformModulesV1NamespaceNameSystemVersionDownloadGet,
 		},
 		{
+			"TerraformModulesV1NamespaceNameSystemVersionPublishPut",
+			strings.ToUpper("Put"),
+			"/terraform/modules/v1/{namespace}/{name}/{system}/{version}/publish",
+			c.TerraformModulesV1NamespaceNameSystemVersionPublishPut,
+		},
+		{
 			"TerraformModulesV1NamespaceNameSystemVersionsGet",
 			strings.ToUpper("Get"),
 			"/terraform/modules/v1/{namespace}/{name}/{system}/versions",
@@ -73,12 +80,6 @@ func (c *TerraformApiController) Routes() Routes {
 			"/terraform/providers/v1/{namespace}/{type}/versions",
 			c.TerraformProvidersV1NamespaceTypeVersionsGet,
 		},
-		{
-			"WellKnownTerraformJsonGet",
-			strings.ToUpper("Get"),
-			"/.well-known/terraform.json",
-			c.WellKnownTerraformJsonGet,
-		},
 	}
 }
 
@@ -94,6 +95,35 @@ func (c *TerraformApiController) TerraformModulesV1NamespaceNameSystemVersionDow
 	versionParam := params["version"]
 
 	result, err := c.service.TerraformModulesV1NamespaceNameSystemVersionDownloadGet(r.Context(), namespaceParam, nameParam, systemParam, versionParam)
+	// If an error occurred, encode the error with the status code
+	if err != nil {
+		c.errorHandler(w, r, err, &result)
+		return
+	}
+	// If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+
+}
+
+// TerraformModulesV1NamespaceNameSystemVersionPublishPut -
+func (c *TerraformApiController) TerraformModulesV1NamespaceNameSystemVersionPublishPut(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	namespaceParam := params["namespace"]
+
+	nameParam := params["name"]
+
+	systemParam := params["system"]
+
+	versionParam := params["version"]
+
+	bodyParam := *os.File{}
+	d := json.NewDecoder(r.Body)
+	d.DisallowUnknownFields()
+	if err := d.Decode(&bodyParam); err != nil {
+		c.errorHandler(w, r, &ParsingError{Err: err}, nil)
+		return
+	}
+	result, err := c.service.TerraformModulesV1NamespaceNameSystemVersionPublishPut(r.Context(), namespaceParam, nameParam, systemParam, versionParam, bodyParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -156,19 +186,6 @@ func (c *TerraformApiController) TerraformProvidersV1NamespaceTypeVersionsGet(w 
 	type_Param := params["type"]
 
 	result, err := c.service.TerraformProvidersV1NamespaceTypeVersionsGet(r.Context(), namespaceParam, type_Param)
-	// If an error occurred, encode the error with the status code
-	if err != nil {
-		c.errorHandler(w, r, err, &result)
-		return
-	}
-	// If no error, encode the body and the result code
-	EncodeJSONResponse(result.Body, &result.Code, w)
-
-}
-
-// WellKnownTerraformJsonGet -
-func (c *TerraformApiController) WellKnownTerraformJsonGet(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.WellKnownTerraformJsonGet(r.Context())
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)

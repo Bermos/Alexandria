@@ -7,7 +7,7 @@ import (
 
 func main() {
 	terraform_bind.Init()
-	terraform_bind.Load("")
+	terraform_bind.Load("modules")
 
 	server.Start(9090)
 }

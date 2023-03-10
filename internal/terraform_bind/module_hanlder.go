@@ -41,6 +41,7 @@ func Load(path string) {
 		go func(entry os.DirEntry) {
 
 			modulePath := filepath.Join(path, entry.Name())
+			modulePath, _ = filepath.Abs(modulePath)
 			log.Printf("INFO - Loading module at path %s", modulePath)
 
 			_, fileReadErr := os.ReadFile(filepath.Join(modulePath, "README.md"))

@@ -9,21 +9,6 @@ tags:
   - name: modules
   - name: terraform
 paths:
-  /.well-known/terraform.json:
-    get:
-      tags:
-        - terraform
-      description: 'Get Terraform service discovery file'
-      responses:
-        200:
-          description: 'Service discovery file'
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties:
-                  type: string
-
   /terraform/providers/v1/{namespace}/{type}/versions:
     get:
       tags:
@@ -125,6 +110,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/module_versions'
+        404:
+          description: 'No module with this name exists'
 
   /terraform/modules/v1/{namespace}/{name}/{system}/{version}/download:
     get:
@@ -163,6 +150,47 @@ paths:
             X-Terraform-Get:
               schema:
                 type: string
+
+  /terraform/modules/v1/{namespace}/{name}/{system}/{version}/publish:
+    put:
+      tags:
+        - terraform
+      description: 'Download a specific version of a Terraform module'
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          description: 'The namespace of the Terraform module'
+          schema:
+            type: string
+        - name: name
+          in: path
+          required: true
+          description: 'The name of the Terraform module'
+          schema:
+            type: string
+        - name: system
+          in: path
+          required: true
+          description: 'The system that the Terraform module is designed for'
+          schema:
+            type: string
+        - name: version
+          in: path
+          required: true
+          description: 'The version of the Terraform module to download'
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/gzip:
+            schema:
+              type: string
+              format: binary
+      responses:
+        201:
+          description: 'Module successfully published'
+
 
   /modules:
     get:

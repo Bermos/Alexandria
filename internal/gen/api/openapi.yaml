@@ -9,20 +9,6 @@ tags:
 - name: modules
 - name: terraform
 paths:
-  /.well-known/terraform.json:
-    get:
-      description: Get Terraform service discovery file
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                additionalProperties:
-                  type: string
-                type: object
-          description: Service discovery file
-      tags:
-      - terraform
   /terraform/providers/v1/{namespace}/{type}/versions:
     get:
       description: Get available versions for provider
@@ -187,6 +173,53 @@ paths:
               schema:
                 type: string
               style: simple
+      tags:
+      - terraform
+  /terraform/modules/v1/{namespace}/{name}/{system}/{version}/publish:
+    put:
+      description: Download a specific version of a Terraform module
+      parameters:
+      - description: The namespace of the Terraform module
+        explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The name of the Terraform module
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The system that the Terraform module is designed for
+        explode: false
+        in: path
+        name: system
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The version of the Terraform module to download
+        explode: false
+        in: path
+        name: version
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/gzip:
+            schema:
+              format: binary
+              type: string
+      responses:
+        "201":
+          description: Module successfully published
       tags:
       - terraform
   /modules:

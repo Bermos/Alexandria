@@ -12,6 +12,7 @@ package openapi
 import (
 	"context"
 	"net/http"
+	"os"
 )
 
 // ModulesApiRouter defines the required methods for binding the api requests to a responses for the ModulesApi
@@ -26,10 +27,10 @@ type ModulesApiRouter interface {
 // pass the data to a TerraformApiServicer to perform the required actions, then write the service results to the http response.
 type TerraformApiRouter interface {
 	TerraformModulesV1NamespaceNameSystemVersionDownloadGet(http.ResponseWriter, *http.Request)
+	TerraformModulesV1NamespaceNameSystemVersionPublishPut(http.ResponseWriter, *http.Request)
 	TerraformModulesV1NamespaceNameSystemVersionsGet(http.ResponseWriter, *http.Request)
 	TerraformProvidersV1NamespaceTypeVersionDownloadOsArchGet(http.ResponseWriter, *http.Request)
 	TerraformProvidersV1NamespaceTypeVersionsGet(http.ResponseWriter, *http.Request)
-	WellKnownTerraformJsonGet(http.ResponseWriter, *http.Request)
 }
 
 // ModulesApiServicer defines the api actions for the ModulesApi service
@@ -46,8 +47,8 @@ type ModulesApiServicer interface {
 // and updated with the logic required for the API.
 type TerraformApiServicer interface {
 	TerraformModulesV1NamespaceNameSystemVersionDownloadGet(context.Context, string, string, string, string) (ImplResponse, error)
+	TerraformModulesV1NamespaceNameSystemVersionPublishPut(context.Context, string, string, string, string, *os.File) (ImplResponse, error)
 	TerraformModulesV1NamespaceNameSystemVersionsGet(context.Context, string, string, string) (ImplResponse, error)
 	TerraformProvidersV1NamespaceTypeVersionDownloadOsArchGet(context.Context, string, string, string, string, string) (ImplResponse, error)
 	TerraformProvidersV1NamespaceTypeVersionsGet(context.Context, string, string) (ImplResponse, error)
-	WellKnownTerraformJsonGet(context.Context) (ImplResponse, error)
 }

@@ -7,7 +7,8 @@ var (
 )
 
 func init() {
-	EnableService("modules.v1", "/modules")
+	EnableService("modules.v1", "/api/terraform/modules/v1/")
+	EnableService("providers.v1", "/api/terraform/providers/v1/")
 }
 
 func GetEnabledServices() map[string]string {

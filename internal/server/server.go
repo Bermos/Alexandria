@@ -17,10 +17,8 @@ func Start(port int) {
 
 	router := openapi.NewRouter(modulesApiController, terraformApiController)
 
-	// Redirect requests to '/.well-known/terraform.json' to '/api/.well-known/terraform.json'
-	router.Path("/.well-known/terraform.json").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/api/.well-known/terraform.json", http.StatusMovedPermanently)
-	})
+	// Handle requests to '/.well-known/terraform.json'
+	router.Path("/.well-known/terraform.json").HandlerFunc(handleWellKnown)
 
 	// Serve static frontend page
 	fs := http.Dir("web/dist/web")
