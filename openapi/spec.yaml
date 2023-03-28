@@ -15,18 +15,8 @@ paths:
         - terraform
       description: 'Get available versions for provider'
       parameters:
-        - name: namespace
-          in: path
-          required: true
-          description: 'Namespace'
-          schema:
-            type: string
-        - name: type
-          in: path
-          required: true
-          description: 'Provider type'
-          schema:
-            type: string
+        - $ref: '#/components/parameters/namespace'
+        - $ref: '#/components/parameters/type'
       responses:
         200:
           description: 'Versions'
@@ -41,36 +31,11 @@ paths:
         - terraform
       description: 'Get details for provider'
       parameters:
-        - name: namespace
-          in: path
-          required: true
-          description: 'Namespace'
-          schema:
-            type: string
-        - name: type
-          in: path
-          required: true
-          description: 'Provider type'
-          schema:
-            type: string
-        - name: version
-          in: path
-          required: true
-          description: 'Provider version'
-          schema:
-            type: string
-        - name: os
-          in: path
-          required: true
-          description: 'Operating system'
-          schema:
-            type: string
-        - name: arch
-          in: path
-          required: true
-          description: 'Architecture'
-          schema:
-            type: string
+        - $ref: '#/components/parameters/namespace'
+        - $ref: '#/components/parameters/type'
+        - $ref: '#/components/parameters/version'
+        - $ref: '#/components/parameters/os'
+        - $ref: '#/components/parameters/arch'
       responses:
         200:
           description: 'Versions'
@@ -85,24 +50,9 @@ paths:
         - terraform
       description: 'Get available versions for a Terraform module'
       parameters:
-        - name: namespace
-          in: path
-          required: true
-          description: 'The namespace of the Terraform module'
-          schema:
-            type: string
-        - name: name
-          in: path
-          required: true
-          description: 'The name of the Terraform module'
-          schema:
-            type: string
-        - name: system
-          in: path
-          required: true
-          description: 'The system that the Terraform module is designed for'
-          schema:
-            type: string
+        - $ref: '#/components/parameters/namespace'
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/system'
       responses:
         200:
           description: 'Versions'
@@ -119,30 +69,10 @@ paths:
         - terraform
       description: 'Download a specific version of a Terraform module'
       parameters:
-        - name: namespace
-          in: path
-          required: true
-          description: 'The namespace of the Terraform module'
-          schema:
-            type: string
-        - name: name
-          in: path
-          required: true
-          description: 'The name of the Terraform module'
-          schema:
-            type: string
-        - name: system
-          in: path
-          required: true
-          description: 'The system that the Terraform module is designed for'
-          schema:
-            type: string
-        - name: version
-          in: path
-          required: true
-          description: 'The version of the Terraform module to download'
-          schema:
-            type: string
+        - $ref: '#/components/parameters/namespace'
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/system'
+        - $ref: '#/components/parameters/version'
       responses:
         204:
           description: 'Module'
@@ -157,30 +87,10 @@ paths:
         - terraform
       description: 'Download a specific version of a Terraform module'
       parameters:
-        - name: namespace
-          in: path
-          required: true
-          description: 'The namespace of the Terraform module'
-          schema:
-            type: string
-        - name: name
-          in: path
-          required: true
-          description: 'The name of the Terraform module'
-          schema:
-            type: string
-        - name: system
-          in: path
-          required: true
-          description: 'The system that the Terraform module is designed for'
-          schema:
-            type: string
-        - name: version
-          in: path
-          required: true
-          description: 'The version of the Terraform module to download'
-          schema:
-            type: string
+        - $ref: '#/components/parameters/namespace'
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/system'
+        - $ref: '#/components/parameters/version'
       requestBody:
         content:
           application/gzip:
@@ -209,6 +119,57 @@ paths:
 
 
 components:
+  parameters:
+    namespace:
+      name: namespace
+      in: path
+      required: true
+      description: 'Namespace'
+      schema:
+        type: string
+    name:
+      name: name
+      in: path
+      required: true
+      description: 'Name'
+      schema:
+        type: string
+    system:
+      name: system
+      in: path
+      required: true
+      description: 'System'
+      schema:
+        type: string
+    version:
+      name: version
+      in: path
+      required: true
+      description: 'Version'
+      schema:
+        type: string
+    os:
+      name: os
+      in: path
+      required: true
+      description: 'Operating system'
+      schema:
+        type: string
+    arch:
+      name: arch
+      in: path
+      required: true
+      description: 'Architecture'
+      schema:
+        type: string
+    type:
+      name: type
+      in: path
+      required: true
+      description: 'Type'
+      schema:
+        type: string
+
   schemas:
     provider_version:
       type: object

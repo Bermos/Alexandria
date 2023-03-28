@@ -12,6 +12,7 @@ package openapi
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -116,7 +117,7 @@ func (c *TerraformApiController) TerraformModulesV1NamespaceNameSystemVersionPub
 
 	versionParam := params["version"]
 
-	bodyParam := *os.File{}
+	bodyParam := new(os.File)
 	d := json.NewDecoder(r.Body)
 	d.DisallowUnknownFields()
 	if err := d.Decode(&bodyParam); err != nil {
