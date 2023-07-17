@@ -14,10 +14,8 @@ func GetEnabledServices() map[string]string {
 	return enabledServices
 }
 
-func EnableService(name, endpoint string) error {
+func EnableService(name, endpoint string) {
 	enabledServices[name] = endpoint
-
-	return nil
 }
 
 func DisableService(name string) error {
